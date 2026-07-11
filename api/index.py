@@ -1,7 +1,7 @@
 import os, json, requests
 from flask import Flask, request, jsonify
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static', static_url_path='/')
 
 API_KEY = os.environ.get("GROQ_API_KEY", "")
 API_URL = "https://api.groq.com/openai/v1/chat/completions"
@@ -16,7 +16,7 @@ def ask():
     try:
         q = request.json.get('question','')
         if not API_KEY:
-            return jsonify({'response':'Error: GROQ_API_KEY not set in Vercel env'})
+            return jsonify({'response':'Error: API key not set'})
         
         r = requests.post(API_URL,
             headers={"Authorization":f"Bearer {API_KEY}","Content-Type":"application/json"},
@@ -26,7 +26,7 @@ def ask():
         if r.status_code == 200:
             resp = r.json()["choices"][0]["message"]["content"]
         else:
-            resp = f"API Error {r.status_code}"
+            resp = f"Error {r.status_code}"
         
         return jsonify({'response':resp})
     except Exception as e:

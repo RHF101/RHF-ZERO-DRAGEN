@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RHF QRIS — Admin Activation</title>
+<style>
+  :root {
+    --bg:#000000;
+    --card:#0c0c0c;
+    --line:#1a1a1a;
+    --line-soft:#262626;
+    --white:#f5f5f5;
+    --grey:#888;
+    --red:#ff4444;
+    --green:#00ff88;
+    --gold:#ffbb00;
+    --mono: 'JetBrains Mono', ui-monospace, 'Courier New', monospace;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: var(--mono);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .container {
+    max-width: 500px;
+    width: 100%;
+  }
+  .header {
+    text-align: center;
+    padding: 30px 20px;
+    background: var(--card);
+    border: 2px solid var(--red);
+    border-radius: 16px 16px 0 0;
+    border-bottom: none;
+  }
+  .header .logo {
+    font-size: 50px;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 22px;
+    color: var(--red);
+    text-shadow: 0 0 30px rgba(255,68,68,0.5);
+    letter-spacing: 4px;
+  }
+  .header p {
+    font-size: 11px;
+    color: var(--grey);
+    letter-spacing: 2px;
+    margin-top: 5px;
+  }
+  .panel {
+    background: var(--card);
+    border: 2px solid var(--red);
+    border-radius: 0 0 16px 16px;
+    border-top: 1px solid var(--line);
+    padding: 25px;
+  }
+  .qr-section {
+    text-align: center;
+    padding: 20px;
+    background: #fff;
+    border-radius: 12px;
+    margin-bottom: 20px;
+  }
+  .qr-section img {
+    width: 200px;
+    height: 200px;
+  }
+  .token-display {
+    background: #000;
+    border: 1px solid var(--line);
+    padding: 12px;
+    border-radius: 6px;
+    text-align: center;
+    margin: 15px 0;
+    color: var(--green);
+    font-size: 16px;
+    letter-spacing: 3px;
+  }
+  .status {
+    text-align: center;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    font-weight: bold;
+    letter-spacing: 2px;
+  }
+  .status.waiting {
+    background: rgba(255,187,0,0.1);
+    border: 1px solid rgba(255,187,0,0.3);
+    color: var(--gold);
+    animation: pulse 1.5s infinite;
+  }
+  .status.active {
+    background: rgba(0,255,136,0.1);
+    border: 1px solid rgba(0,255,136,0.3);
+    color: var(--green);
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .steps {
+    background: #0a0a0a;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+  }
+  .steps .step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 12px;
+    color: #aaa;
+  }
+  .steps .step:last-child { border-bottom: none; }
+  .steps .num {
+    width: 24px;
+    height: 24px;
+    background: var(--red);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  .steps .num.done {
+    background: var(--green);
+  }
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 2px;
+    transition: 0.3s;
+    text-transform: uppercase;
+  }
+  .btn-generate {
+    background: var(--red);
+    color: #fff;
+    margin-bottom: 10px;
+  }
+  .btn-generate:hover {
+    box-shadow: 0 0 30px rgba(255,68,68,0.5);
+  }
+  .btn-verify {
+    background: var(--green);
+    color: #000;
+  }
+  .btn-verify:hover {
+    box-shadow: 0 0 30px rgba(0,255,136,0.5);
+  }
+  .btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+  .info {
+    font-size: 10px;
+    color: var(--grey);
+    text-align: center;
+    margin-top: 15px;
+    letter-spacing: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="logo">📱</div>
+    <h1>RHF QRIS</h1>
+    <p>ADMIN ACTIVATION SYSTEM</p>
+  </div>
+
+  <div class="panel">
+    <!-- QR Code Area -->
+    <div id="qrArea" style="display:none;">
+      <div class="qr-section" id="qrImage"></div>
+      <div class="token-display" id="tokenDisplay"></div>
+    </div>
+
+    <!-- Status -->
+    <div class="status waiting" id="statusBox">
+      ⏳ MENUNGGU QR CODE
+    </div>
+
+    <!-- Steps -->
+    <div class="steps">
+      <div class="step">
+        <div class="num" id="step1">1</div>
+        <span>Generate QR Code</span>
+      </div>
+      <div class="step">
+        <div class="num" id="step2">2</div>
+        <span>Scan dengan WhatsApp Perangkat Tertaut</span>
+      </div>
+      <div class="step">
+        <div class="num" id="step3">3</div>
+        <span>AI Auto-Aktivasi sebagai ADMIN</span>
+      </div>
+    </div>
+
+    <!-- Buttons -->
+    <button class="btn btn-generate" onclick="generateQR()">
+      🔐 GENERATE QR CODE
+    </button>
+    <button class="btn btn-verify" id="btnVerify" onclick="verifyToken()" disabled>
+      ✅ VERIFIKASI TOKEN
+    </button>
+
+    <div class="info">
+      Token berlaku 5 menit • Satu kali pakai • Auto-admin setelah scan
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentToken = '';
+  let checkInterval = null;
+
+  async function generateQR() {
+    const btn = document.querySelector('.btn-generate');
+    btn.textContent = '⏳ GENERATING...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch('/api/qrcode');
+      const data = await response.json();
+
+      currentToken = data.token;
+
+      // Tampilkan QR
+      document.getElementById('qrArea').style.display = 'block';
+      document.getElementById('qrImage').innerHTML = `<img src="${data.qr}" alt="QR Code">`;
+      document.getElementById('tokenDisplay').textContent = `TOKEN: ${data.token}`;
+
+      // Update status
+      document.getElementById('statusBox').className = 'status waiting';
+      document.getElementById('statusBox').textContent = '📱 SCAN QR DENGAN WHATSAPP';
+
+      // Update steps
+      document.getElementById('step1').className = 'num done';
+      document.getElementById('step2').className = 'num';
+      document.getElementById('step2').style.background = 'var(--red)';
+      document.getElementById('step2').style.animation = 'pulse 1s infinite';
+
+      // Enable verify button
+      document.getElementById('btnVerify').disabled = false;
+      document.getElementById('btnVerify').textContent = '✅ VERIFIKASI TOKEN';
+
+      // Auto-check status
+      startAutoCheck();
+
+      btn.textContent = '🔄 REGENERATE QR';
+      btn.disabled = false;
+
+    } catch (error) {
+      btn.textContent = '❌ GAGAL - COBA LAGI';
+      btn.disabled = false;
+    }
+  }
+
+  async function verifyToken() {
+    const btn = document.getElementById('btnVerify');
+    btn.textContent = '⏳ VERIFYING...';
+    btn.disabled = true;
+
+    try {
+      const response = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: currentToken })
+      });
+      const data = await response.json();
+
+      if (data.status === 'ADMIN ACCESS GRANTED') {
+        // Success!
+        document.getElementById('statusBox').className = 'status active';
+        document.getElementById('statusBox').textContent = '🔓 ADMIN MODE AKTIF!';
+        
+        document.getElementById('step2').className = 'num done';
+        document.getElementById('step3').className = 'num done';
+        document.getElementById('step3').style.background = 'var(--green)';
+
+        btn.textContent = '✅ ADMIN AKTIF';
+        btn.style.background = 'var(--green)';
+        btn.style.color = '#000';
+
+        stopAutoCheck();
+
+        // Redirect ke chat setelah 2 detik
+        setTimeout(() => {
+          window.location.href = '/?admin=true';
+        }, 2000);
+
+      } else {
+        alert('Token tidak valid atau belum di-scan!');
+        btn.textContent = '✅ VERIFIKASI TOKEN';
+        btn.disabled = false;
+      }
+    } catch (error) {
+      btn.textContent = '❌ GAGAL - COBA LAGI';
+      btn.disabled = false;
+    }
+  }
+
+  function startAutoCheck() {
+    stopAutoCheck();
+    checkInterval = setInterval(async () => {
+      try {
+        const response = await fetch('/api/status');
+        const data = await response.json();
+        if (data.admin_active) {
+          document.getElementById('statusBox').className = 'status active';
+          document.getElementById('statusBox').textContent = '🔓 ADMIN AKTIF!';
+          document.getElementById('step2').className = 'num done';
+          document.getElementById('step3').className = 'num done';
+          document.getElementById('btnVerify').textContent = '✅ ADMIN AKTIF';
+          document.getElementById('btnVerify').disabled = true;
+          stopAutoCheck();
+        }
+      } catch (e) {}
+    }, 3000);
+  }
+
+  function stopAutoCheck() {
+    if (checkInterval) {
+      clearInterval(checkInterval);
+      checkInterval = null;
+    }
+  }
+
+  // Auto-generate QR on load
+  window.onload = () => {
+    generateQR();
+  };
+</script>
+
+</body>
+  </html>

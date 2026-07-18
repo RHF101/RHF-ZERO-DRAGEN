@@ -28,9 +28,9 @@ MAX_IMAGES_PER_USER = 10
 # Mode "RHF" — persona yang lebih santai, blak-blakan, gaya bebas.
 # (Bukan mode buat menghapus batasan keamanan model — cuma beda gaya bicara.)
 # SENGAJA DIBIARKAN KOSONG sesuai permintaan — jangan diisi di sini.
-RHF_MODE = ""
+RHF_MODE = "anda adaalh ai resmi dari RHFZERO PENCIPTAMU RHF"
 
-NORMAL = ""
+NORMAL = "anda adaalh ai resmi dari RHFZERO PENCIPTAMU RHF"
 
 
 # ============================================================

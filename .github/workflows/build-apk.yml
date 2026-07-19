@@ -24,14 +24,14 @@ jobs:
       - name: Install Bubblewrap CLI
         run: npm install -g @bubblewrap/cli
 
-      - name: Copy twa-manifest.json into build folder
+      - name: Prepare build folder
         run: |
-          mkdir twa-build
+          mkdir -p twa-build
           cp twa-manifest.json twa-build/twa-manifest.json
 
       - name: Generate signing keystore
+        working-directory: twa-build
         run: |
-          cd twa-build
           keytool -genkeypair -v \
             -keystore android.keystore \
             -alias rhf-dragen-key \
@@ -40,21 +40,33 @@ jobs:
             -keypass "${{ secrets.KEYSTORE_PASSWORD }}" \
             -dname "CN=RHF, OU=RHF, O=RHF, L=Unknown, S=Unknown, C=ID"
 
-      - name: Update Bubblewrap config (set JDK path, skip prompts)
+      - name: Write Bubblewrap global config (skip all interactive prompts)
         run: |
-          cd twa-build
-          npx bubblewrap updateConfig --jdkPath="$JAVA_HOME"
+          mkdir -p ~/.bubblewrap
+          cat > ~/.bubblewrap/config.json << EOF
+          {
+            "jdkPath": "$JAVA_HOME",
+            "androidSdkPath": "$ANDROID_HOME"
+          }
+          EOF
+          cat ~/.bubblewrap/config.json
 
       - name: Build APK
+        working-directory: twa-build
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
-          cd twa-build
-          yes "" | bubblewrap build --skipPwaValidation
+          bubblewrap build --skipPwaValidation < /dev/null
+
+      - name: List output files (debug)
+        if: always()
+        working-directory: twa-build
+        run: ls -la
 
       - name: Upload APK artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: rhf-dragen-apk
-          path: twa-build/app-release-signed.apk
+          path: twa-build/*.apk

@@ -40,11 +40,18 @@ jobs:
             -keypass "${{ secrets.KEYSTORE_PASSWORD }}" \
             -dname "CN=RHF, OU=RHF, O=RHF, L=Unknown, S=Unknown, C=ID"
 
-      - name: Build APK
+      - name: Update Bubblewrap config (set JDK path, skip prompts)
         run: |
           cd twa-build
-          printf "N\n%s\n" "$JAVA_HOME" | bubblewrap build --skipPwaValidation \
-            --password="${{ secrets.KEYSTORE_PASSWORD }}"
+          npx bubblewrap updateConfig --jdkPath="$JAVA_HOME"
+
+      - name: Build APK
+        env:
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+        run: |
+          cd twa-build
+          yes "" | bubblewrap build --skipPwaValidation
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4

@@ -1,0 +1,41 @@
+{
+  "packageId": "com.rhf.dragen",
+  "host": "rhf-zero-dragen.vercel.app",
+  "name": "RHF DRAGEN",
+  "launcherName": "RHF DRAGEN",
+  "display": "standalone",
+  "themeColor": "#1f6feb",
+  "themeColorDark": "#1f6feb",
+  "navigationColor": "#0d1117",
+  "navigationColorDark": "#0d1117",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#0d1117",
+  "backgroundColorDark": "#0d1117",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://rhf-zero-dragen.vercel.app/icon-512.png",
+  "maskableIconUrl": "https://rhf-zero-dragen.vercel.app/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "rhf-dragen-key"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://rhf-zero-dragen.vercel.app/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://rhf-zero-dragen.vercel.app/",
+  "minSdkVersion": 21,
+  "orientation": "portrait",
+  "fingerprints": []
+}

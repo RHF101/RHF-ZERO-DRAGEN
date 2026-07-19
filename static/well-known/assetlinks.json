@@ -1,8 +1,0 @@
-[{
-  "relation": ["delegate_permission/common.handle_all_urls"],
-  "target": {
-    "namespace": "android_app",
-    "package_name": "app.vercel.rhf_zero_dragen.twa",
-    "sha256_cert_fingerprints": ["MASUKKAN_SHA256_DI_SINI"]
-  }
-}]

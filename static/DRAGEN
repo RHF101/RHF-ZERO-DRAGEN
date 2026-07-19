@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download RHF DRAGEN</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:#0d1117;
+    color:#c9d1d9;
+    font-family:'Courier New', monospace;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .card {
+    background:#161b22;
+    border:1px solid #1f6feb;
+    border-radius:12px;
+    padding:40px 30px;
+    max-width:400px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 0 30px rgba(31,111,235,0.15);
+  }
+  img.logo {
+    width:96px;
+    height:96px;
+    border-radius:20px;
+    margin-bottom:20px;
+  }
+  h1 {
+    color:#58a6ff;
+    font-size:22px;
+    margin-bottom:8px;
+    letter-spacing:1px;
+  }
+  p.desc {
+    color:#8b949e;
+    font-size:14px;
+    margin-bottom:28px;
+  }
+  a.btn {
+    display:block;
+    background:#1f6feb;
+    color:#fff;
+    text-decoration:none;
+    padding:14px;
+    border-radius:8px;
+    font-weight:bold;
+    font-size:16px;
+    margin-bottom:12px;
+    transition:0.2s;
+  }
+  a.btn:active { transform:scale(0.97); }
+  .version {
+    color:#484f58;
+    font-size:12px;
+    margin-top:16px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="/icon-512.png" alt="RHF DRAGEN">
+    <h1>RHF DRAGEN</h1>
+    <p class="desc">AI Assistant — Download aplikasi Android-nya di sini.</p>
+    <a class="btn" href="https://github.com/RHF101/RHF-ZERO-DRAGEN/releases/latest/download/rhf-dragen.apk">
+      ⬇ Download APK
+    </a>
+    <div class="version">v1.0.0 · Android 7+</div>
+  </div>
+</body>
+</html>

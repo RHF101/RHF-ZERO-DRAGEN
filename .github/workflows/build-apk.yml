@@ -1,0 +1,53 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Bubblewrap CLI
+        run: npm install -g @bubblewrap/cli
+
+      - name: Copy twa-manifest.json into build folder
+        run: |
+          mkdir twa-build
+          cp twa-manifest.json twa-build/twa-manifest.json
+
+      - name: Generate signing keystore
+        run: |
+          cd twa-build
+          keytool -genkeypair -v \
+            -keystore android.keystore \
+            -alias rhf-dragen-key \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "${{ secrets.KEYSTORE_PASSWORD }}" \
+            -keypass "${{ secrets.KEYSTORE_PASSWORD }}" \
+            -dname "CN=RHF, OU=RHF, O=RHF, L=Unknown, S=Unknown, C=ID"
+
+      - name: Build APK
+        run: |
+          cd twa-build
+          bubblewrap build --skipPwaValidation \
+            --password="${{ secrets.KEYSTORE_PASSWORD }}"
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rhf-dragen-apk
+          path: twa-build/app-release-signed.apk

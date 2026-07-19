@@ -43,12 +43,6 @@ jobs:
             -keypass "${{ secrets.KEYSTORE_PASSWORD }}" \
             -dname "CN=RHF, OU=RHF, O=RHF, L=Unknown, S=Unknown, C=ID"
 
-      - name: Debug print SDK/JDK paths
-        run: |
-          echo "JAVA_HOME=$JAVA_HOME"
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-
       - name: Write Bubblewrap global config
         run: |
           mkdir -p ~/.bubblewrap
@@ -66,7 +60,7 @@ jobs:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         run: |
-          bubblewrap build --skipPwaValidation < /dev/null
+          printf "N\n" | bubblewrap build --skipPwaValidation
 
       - name: List output files (debug)
         if: always()

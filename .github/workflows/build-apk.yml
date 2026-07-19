@@ -43,7 +43,7 @@ jobs:
       - name: Build APK
         run: |
           cd twa-build
-          bubblewrap build --skipPwaValidation \
+          echo "N" | bubblewrap build --skipPwaValidation \
             --password="${{ secrets.KEYSTORE_PASSWORD }}"
 
       - name: Upload APK artifact

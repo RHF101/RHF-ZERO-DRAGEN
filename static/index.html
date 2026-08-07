@@ -921,14 +921,14 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyC3p30MxvcKSru0_kqwrFhuagromMu9yqs",
-  authDomain: "rhf-zero-ai.firebaseapp.com",
-  databaseURL: "https://rhf-zero-ai-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "rhf-zero-ai",
-  storageBucket: "rhf-zero-ai.firebasestorage.app",
-  messagingSenderId: "488942246021",
-  appId: "1:488942246021:web:5fa1324f3e6594781c31ec",
-  measurementId: "G-4MN67F5H0P"
+  apiKey: "AIzaSyDtCWNJODoYrJuHdeRmmAfCev2xfD-Uo8E",
+  authDomain: "rhf-zero-b5a2b.firebaseapp.com",
+  databaseURL: "https://rhf-zero-b5a2b-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "rhf-zero-b5a2b",
+  storageBucket: "rhf-zero-b5a2b.firebasestorage.app",
+  messagingSenderId: "644651802497",
+  appId: "1:644651802497:web:ca094e2a0c27f868531280",
+  measurementId: "G-LV3BWRRYFW"
 };
 
 const fbApp = initializeApp(firebaseConfig);
@@ -1730,11 +1730,20 @@ async function callBackend(userText,mode,images=[],useMemory=false,files=[]){
     method:'POST',
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
-      question:userText, mode:mode, session:SESSION_ID,
+      question:userText, mode:mode,
+      session:(currentThreadId||SESSION_ID),
       email: currentUser?currentUser.email:'',
       images:images.map(i=>({data:i.data,mime:i.mime})),
       use_memory_images:useMemory,
-      files:files.map(f=>({data:f.data,mime:f.mime,file_name:f.file_name}))
+      files:files.map(f=>({data:f.data,mime:f.mime,file_name:f.file_name})),
+      // Kirim history percakapan thread yang lagi aktif. Kalau elemen terakhir
+      // di `conversation` adalah pesan user yang baru saja ditambahkan (alur
+      // kirim pesan normal), itu sudah terwakili di field `question`, jadi
+      // dikecualikan. Kalau bukan (mis. regenerate jawaban), history dikirim utuh.
+      history: (conversation.length && conversation[conversation.length-1].role==='user'
+        ? conversation.slice(0,-1)
+        : conversation
+      ).map(m=>({role:m.role,content:m.content}))
     })
   });
   if(!response.ok) throw new Error('HTTP '+response.status);

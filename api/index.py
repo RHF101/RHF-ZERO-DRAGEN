@@ -61,7 +61,7 @@ NORMAL = (
 # id-nya beda; kalau kosong, fallback ke default project lama.
 # ============================================================
 FIREBASE_URL = (os.environ.get("FIREBASE_URL") or
-                "https://rhf-zero-ai-default-rtdb.asia-southeast1.firebasedatabase.app").rstrip("/")
+                "https://rhf-zero-ai-default-rtdb.asia-southeast2.firebasedatabase.app").rstrip("/")
 
 
 def firebase_get(path):
